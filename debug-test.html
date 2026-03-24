@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Debug Test</title>
+</head>
+<body>
+    <div id="root">Testing if root div works...</div>
+    <script>
+        console.log('Debug: HTML loaded');
+        console.log('Debug: Root element exists?', document.getElementById('root'));
+        
+        // Test if there are any JavaScript errors
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            console.error('Message:', e.message);
+            console.error('Source:', e.filename, 'Line:', e.lineno);
+        });
+        
+        // Check if React is loading
+        setTimeout(() => {
+            console.log('Debug: After timeout - root content:', document.getElementById('root').innerHTML);
+        }, 3000);
+    </script>
+</body>
+</html>

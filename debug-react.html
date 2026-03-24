@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug React App</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        #root { border: 2px solid red; min-height: 100px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Debug - React App Status</h1>
+    
+    <div class="debug-section">
+        <h2>DOM Elements</h2>
+        <p>Root element exists: <span id="root-check"></span></p>
+        <p>Root element content: <span id="root-content"></span></p>
+    </div>
+    
+    <div class="debug-section">
+        <h2>React App Container</h2>
+        <div id="root">
+            <!-- Conteúdo da aplicação React deve aparecer aqui -->
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Console Errors</h2>
+        <div id="console-errors"></div>
+    </div>
+    
+    <script>
+        // Verificar se o elemento root existe
+        const rootElement = document.getElementById('root');
+        const rootCheck = document.getElementById('root-check');
+        const rootContent = document.getElementById('root-content');
+        const consoleErrors = document.getElementById('console-errors');
+        
+        if (rootElement) {
+            rootCheck.textContent = '✓ Exists';
+            rootCheck.className = 'success';
+        } else {
+            rootCheck.textContent = '✗ Missing';
+            rootCheck.className = 'error';
+        }
+        
+        // Monitorar mudanças no conteúdo do root
+        function checkRootContent() {
+            if (rootElement) {
+                const content = rootElement.innerHTML.trim();
+                if (content) {
+                    rootContent.textContent = `✓ Has content (${content.length} chars)`;
+                    rootContent.className = 'success';
+                } else {
+                    rootContent.textContent = '✗ Empty';
+                    rootContent.className = 'error';
+                }
+            }
+        }
+        
+        // Capturar erros do console
+        const originalConsoleError = console.error;
+        const errors = [];
+        
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            originalConsoleError.apply(console, args);
+            updateErrorDisplay();
+        };
+        
+        function updateErrorDisplay() {
+            if (errors.length > 0) {
+                consoleErrors.innerHTML = errors.map(error => 
+                    `<div class="error">• ${error}</div>`
+                ).join('');
+            } else {
+                consoleErrors.innerHTML = '<div class="success">No errors detected</div>';
+            }
+        }
+        
+        // Verificar conteúdo periodicamente
+        setInterval(checkRootContent, 1000);
+        checkRootContent();
+        updateErrorDisplay();
+        
+        // Log para debug
+        console.log('Debug script loaded');
+        console.log('Root element:', rootElement);
+        
+        // Tentar carregar React scripts
+        setTimeout(() => {
+            if (window.React) {
+                console.log('React loaded:', window.React.version);
+            } else {
+                console.error('React not found');
+            }
+            
+            if (window.ReactDOM) {
+                console.log('ReactDOM loaded');
+            } else {
+                console.error('ReactDOM not found');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
